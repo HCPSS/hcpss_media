@@ -1,0 +1,5 @@
+name = HCPSS Media
+description = A Drupal module for tweaking media management.
+core = 7.x
+package = HCPSS
+version = "7.x-1.1"

@@ -1,0 +1,32 @@
+<?php
+
+/**
+ * Implementation of hook_file_insert()
+ */
+function hcpss_media_file_insert($file) {
+  list($stream, $path) = explode('://', $file->uri);
+
+  $directory  = pathinfo($path, PATHINFO_DIRNAME);
+  $filename   = pathinfo($path, PATHINFO_FILENAME);
+  $extension  = pathinfo($path, PATHINFO_EXTENSION);
+
+  // Convert to lowercase
+  $filename = drupal_strtolower($filename);
+
+  // Remove all non alphanumeric characters except spaces, hyphens and
+  // underscores.
+  $filename = preg_replace('/[^a-z0-9 \-_]/', '', $filename);
+
+  // Convert spaces to hyphens.
+  $filename = str_replace(' ', '-', $filename);
+
+  // Reassemble the uri.
+  $uri = vsprintf('%s://%s/%s.%s', array(
+    $stream,
+    $directory,
+    $filename,
+    $extension,
+  ));
+
+  file_move($file, $uri, FILE_EXISTS_REPLACE);
+}
